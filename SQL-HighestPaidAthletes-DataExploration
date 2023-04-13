@@ -1,0 +1,59 @@
+SELECT *
+FROM dbo.HIGHEST
+
+
+--Total earnings of all athletes who play basketball and football
+SELECT SUM(TOTAL_EARNINGS) AS TOTAL_SALARY
+FROM dbo.HIGHEST
+WHERE SPORT IN ('Basketball', 'Football')
+
+--Highest paid athlete in the dataset and their total salary
+SELECT TOP 1 NAME, TOTAL_EARNINGS
+FROM dbo.HIGHEST
+
+--Average earnings of the top 10 highest paid athletes
+SELECT AVG(TOTAL_EARNINGS) AS AVG_TOTAL
+FROM ( SELECT TOP 10 TOTAL_EARNINGS
+	   FROM dbo.HIGHEST
+	   ORDER BY TOTAL_EARNINGS DESC) AS TOP_10
+
+--List of athletes who have earned more than $50M
+SELECT NAME, TOTAL_EARNINGS
+FROM dbo.HIGHEST
+WHERE TOTAL_EARNINGS > 50000000
+ORDER BY TOTAL_EARNINGS DESC
+
+--The number of athletes in each sport
+SELECT SPORT, COUNT(SPORT) AS NUM_ATHLETES
+FROM dbo.HIGHEST
+GROUP BY SPORT
+ORDER BY NUM_ATHLETES DESC
+
+--Total salary paid to athletes in each sport
+SELECT SPORT, SUM(TOTAL_EARNINGS) AS TOTAL_SALARY
+FROM dbo.HIGHEST
+GROUP BY SPORT
+ORDER BY TOTAL_SALARY DESC
+
+--Top 5 highest-paid athletes and their salary
+SELECT  NAME, TOTAL_EARNINGS
+FROM ( 
+		SELECT ROW_NUMBER() OVER (ORDER BY TOTAL_EARNINGS DESC) AS RANK, NAME, TOTAL_EARNINGS
+		FROM dbo.HIGHEST) AS RANKED_ATHLETES
+WHERE RANK <= 5
+
+--Highest salary paid to an athlete in each sport
+SELECT SPORT, MAX(TOTAL_EARNINGS) AS HIGHEST_SALARY
+FROM dbo.HIGHEST
+GROUP BY SPORT
+
+--Average salary of athletes in each sport
+SELECT SPORT, AVG(TOTAL_EARNINGS) AS AVERAGE_SALARY
+FROM dbo.HIGHEST
+GROUP BY SPORT
+ORDER BY AVERAGE_SALARY DESC
+
+--Total salary paid to athletes playing basketball
+SELECT SUM(TOTAL_EARNINGS) AS TOTAL_SALARY
+FROM dbo.HIGHEST
+WHERE SPORT = 'Basketball'
